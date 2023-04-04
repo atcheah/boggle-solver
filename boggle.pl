@@ -40,9 +40,7 @@ different_cells(X_A, Y_A, X_B, Y_B) :-
 
 % no individual cell can be used more than once in a word
 % UsedPositions is a list of lists, each list is a pair of X and Y coordinates
-% e.g. [[0, 0], [1, 0], [2, 0]]. Needed as we have randomly generated boards,
-% so we can't trust the a character's position in the board is unique, as it may be repeated in the board
-check_letter_used(A, Board, UsedPositions) :-
-    nth0(Y_A, Board, Row_A),
-    nth0(X_A, Row_A, A),
+% e.g. [[0, 0], [1, 0], [2, 0]]. Needed as we have randomly generated boards, so we can't not retrieve a letters position from the board
+% as it could be duplicated
+check_letter_used(X_A, Y_A, UsedPositions) :-
     \+ member([X_A, Y_A], UsedPositions).
