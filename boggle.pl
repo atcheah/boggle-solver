@@ -1,3 +1,6 @@
+
+:- dynamic used/2.
+
 % dynamically define the list of characters
 characters(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']).
 
@@ -44,3 +47,55 @@ different_cells(X_A, Y_A, X_B, Y_B) :-
 % as it could be duplicated
 check_letter_used(X_A, Y_A, UsedPositions) :-
     \+ member([X_A, Y_A], UsedPositions).
+
+
+solve_boggle_board(Board, Words) :-
+    findall(Word, (nth0(Index, Board, X), solve_boggle_board_helper(Board, Index, [Index], [X], Word)), Words).
+
+solve_boggle_board_helper(_, _, _, Word, Word) :-
+    atom_chars(Atom, Word),
+    atom_length(Atom, Length),
+    atom_string(Atom,X),
+    Length > 2,
+    dictionary(X).
+
+solve_boggle_board_helper(Board, Index, UsedIndexes, Word, Result) :-
+    adjacent_positions(Index, Positions), 
+    member(NextIndex, Positions),
+    \+ member(NextIndex, UsedIndexes),
+    nth0(NextIndex, Board, Letter),
+    append(Word, [Letter], NewWord),
+    solve_boggle_board_helper(Board, NextIndex, [NextIndex|UsedIndexes], NewWord, Result).
+
+adjacent_positions(Index, ValidIndexes) :-
+    adjacent_indexes(Index, AdjacentIndexes),
+    include(is_valid_index, AdjacentIndexes, ValidIndexes).
+
+adjacent_indexes(0, [1,5,4]).
+adjacent_indexes(3, [2,6,7]).
+adjacent_indexes(4, [0,1,5,9,8]).
+adjacent_indexes(8, [4,5,9,13,12]).
+adjacent_indexes(12, [8,9,13]).
+adjacent_indexes(7, [3,2,6,10,11]).
+adjacent_indexes(11, [7,6,10,14,15]).
+
+adjacent_indexes(Index, AdjacentIndexes) :-
+   \+ member(Index, [0,3,4,8,12,7,11]),
+    Top is Index - 4,
+    Bottom is Index + 4,
+    Left is Index - 1,
+    Right is Index + 1,
+    TopLeft is Top - 1,
+    TopRight is Top + 1,
+    BottomLeft is Bottom - 1,
+    BottomRight is Bottom + 1,
+    AdjacentIndexes = [Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight].
+
+is_valid_index(Index) :-
+    Index >= 0,
+    Index =< 15.
+
+
+dictionary("zebra").
+
+% board to use to test for zebra ['z','e','b','r','a','a','a','a','a','a','a','a','a','a','a','a']
