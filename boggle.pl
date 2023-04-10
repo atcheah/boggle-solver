@@ -67,35 +67,30 @@ solve_boggle_board_helper(Board, Index, UsedIndexes, Word, Result) :-
     append(Word, [Letter], NewWord),
     solve_boggle_board_helper(Board, NextIndex, [NextIndex|UsedIndexes], NewWord, Result).
 
-adjacent_positions(Index, ValidIndexes) :-
-    adjacent_indexes(Index, AdjacentIndexes),
-    include(is_valid_index, AdjacentIndexes, ValidIndexes).
+adjacent_positions(Index, AdjacentIndexes) :-
+    adjacent_indexes(Index, AdjacentIndexes).
 
-adjacent_indexes(0, [1,5,4]).
-adjacent_indexes(3, [2,6,7]).
-adjacent_indexes(4, [0,1,5,9,8]).
-adjacent_indexes(8, [4,5,9,13,12]).
-adjacent_indexes(12, [8,9,13]).
-adjacent_indexes(7, [3,2,6,10,11]).
-adjacent_indexes(11, [7,6,10,14,15]).
-
-adjacent_indexes(Index, AdjacentIndexes) :-
-   \+ member(Index, [0,3,4,8,12,7,11]),
-    Top is Index - 4,
-    Bottom is Index + 4,
-    Left is Index - 1,
-    Right is Index + 1,
-    TopLeft is Top - 1,
-    TopRight is Top + 1,
-    BottomLeft is Bottom - 1,
-    BottomRight is Bottom + 1,
-    AdjacentIndexes = [Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight].
-
-is_valid_index(Index) :-
-    Index >= 0,
-    Index =< 15.
+adjacent_indexes(0, [1,3,4]).
+adjacent_indexes(1, [0,3, 4,5,2]).
+adjacent_indexes(2, [1,4,5]).
+adjacent_indexes(3, [0,1,4,7,6]).
+adjacent_indexes(4, [0,1,2,3,5,7,6,8]).
+adjacent_indexes(5, [2,1,4,7,8]).
+adjacent_indexes(6, [3,4,7]).
+adjacent_indexes(7, [6,3,4,5,8]).
+adjacent_indexes(8, [5,4,7]).
 
 
 dictionary("zebra").
+dictionary("zebras").
+dictionary("table").
+dictionary("bat").
+dictionary("tab").
+dictionary("rat").
+dictionary("rats").
+dictionary("tab").
+dictionary("sear").
+dictionary("olive").
 
-% board to use to test for zebra ['z','e','b','r','a','a','a','a','a','a','a','a','a','a','a','a']
+
+% board to use to test for words ['z','e','b','r','a','l','t','s','e']
