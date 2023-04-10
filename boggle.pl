@@ -125,17 +125,25 @@ run(A, B, C, D, E, F, G, H, I) :-
     % send(@p, display, new(@text16, text('P')), point(160,150)),
 
     send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
-    solve_boggle_board([A,B,C,D,E,F,G,H,I], X),
-    concat_all(X, Result),
+    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    sort(WordsWithDuplicate, Words),
+    concat_all(Words, [], Result),
     flatten_and_concat(Result, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
 
-concat_all([], Result).
-concat_all([H|T], Result) :-
+concat_all([], Result, Result).
+concat_all([H|T], RSF, Result) :-
     atomic_list_concat(H, '', Atm),
     atom_string(Atm, Str),
     string_concat(Str, " ", Str_with_space),
-    concat_all(T, Str_with_space|Result).
+    concat_all(T, [Str_with_space|RSF], Result).
+
+% concat_all([], []).
+% concat_all([H|T], Result) :-
+%     atomic_list_concat(H, '', Atm),
+%     atom_string(Atm, Str),
+%     string_concat(Str, " ", Str_with_space),
+%     concat_all(T, Str_with_space|Result).
 
 flatten_and_concat(A, Result) :-
     flatten(A, L),
