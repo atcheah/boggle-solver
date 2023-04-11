@@ -59,10 +59,10 @@ generate_random_character(C) :-
 % words must be at least three letters in length
 min_word_length(3).
 
-solve_boggle_board(Board, Words) :-
-    findall(Word, (nth0(Index, Board, X), solve_boggle_board_helper(Board, Index, [Index], [X], Word)), Words).
+solve_boggle_board(Board, Dimension, Words) :-
+    findall(Word, (nth0(Index, Board, X), solve_boggle_board_helper(Board, Dimension, Index, [Index], [X], Word)), Words).
 
-solve_boggle_board_helper(_, _, _, Word, Word) :-
+solve_boggle_board_helper(_, _, _, _, Word, Word) :-
     atom_chars(Atom, Word),
     atom_length(Atom, Length),
     atom_string(Atom,X),
@@ -70,15 +70,13 @@ solve_boggle_board_helper(_, _, _, Word, Word) :-
     Length > L,
     dictionary(X).
 
-solve_boggle_board_helper(Board, Index, UsedIndexes, Word, Result) :-
-    length(Board, Length),
-    Dimension = sqrt(Length),
+solve_boggle_board_helper(Board, Dimension, Index, UsedIndexes, Word, Result) :-
     adjacent_indexes(Dimension, Index, Positions), 
     member(NextIndex, Positions),
     \+ member(NextIndex, UsedIndexes),
     nth0(NextIndex, Board, Letter),
     append(Word, [Letter], NewWord),
-    solve_boggle_board_helper(Board, NextIndex, [NextIndex|UsedIndexes], NewWord, Result).
+    solve_boggle_board_helper(Board, Dimension, NextIndex, [NextIndex|UsedIndexes], NewWord, Result).
 
 
 
@@ -117,13 +115,15 @@ run(A, B, C, D, E, F, G, H, I) :-
 
     % Display the answers
     send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
-    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    solve_boggle_board([A,B,C,D,E,F,G,H,I],3, WordsWithDuplicate),
     sort(WordsWithDuplicate, Words),
     flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
 
 % boggle board solver where we board is randlomly generated for 3x3
 run(3):-
+    new(@p, picture('Boggle Board')),
+    send(@p, open),
     % Maps generate boggle to gui
     generate_boggle_board(3, M),
     nth0(0, M, A),
@@ -162,7 +162,7 @@ run(3):-
 
     % Display the answers
     send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
-    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    solve_boggle_board([A,B,C,D,E,F,G,H,I],3, WordsWithDuplicate),
     sort(WordsWithDuplicate, Words),
     flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
@@ -234,7 +234,7 @@ run(4):-
 
     % Display the answers
     send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
-    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    solve_boggle_board(M,4 , WordsWithDuplicate),
     sort(WordsWithDuplicate, Words),
     flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
