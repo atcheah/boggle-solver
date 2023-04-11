@@ -17,24 +17,24 @@ adjacent_indexes(3, 7, [6,3,4,5,8]).
 adjacent_indexes(3, 8, [5,4,7]).
 
 adjacent_indexes(4, 0, [1,5,4]).
- adjacent_indexes(4, 3, [2,6,7]).
- adjacent_indexes(4, 4, [0,1,5,9,8]).
- adjacent_indexes(4, 8, [4,5,9,13,12]).
- adjacent_indexes(4, 12, [8,9,13]).
- adjacent_indexes(4, 7, [3,2,6,10,11]).
- adjacent_indexes(4, 11, [7,6,10,14,15]).
+adjacent_indexes(4, 3, [2,6,7]).
+adjacent_indexes(4, 4, [0,1,5,9,8]).
+adjacent_indexes(4, 8, [4,5,9,13,12]).
+adjacent_indexes(4, 12, [8,9,13]).
+adjacent_indexes(4, 7, [3,2,6,10,11]).
+adjacent_indexes(4, 11, [7,6,10,14,15]).
 
- adjacent_indexes(4, Index, AdjacentIndexes) :-
-    \+ member(Index, [0,3,4,8,12,7,11]),
-     Top is Index - 4,
-     Bottom is Index + 4,
-     Left is Index - 1,
-     Right is Index + 1,
-     TopLeft is Top - 1,
-     TopRight is Top + 1,
-     BottomLeft is Bottom - 1,
-     BottomRight is Bottom + 1,
-     AdjacentIndexes = [Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight].
+adjacent_indexes(4, Index, AdjacentIndexes) :-
+\+ member(Index, [0,3,4,8,12,7,11]),
+    Top is Index - 4,
+    Bottom is Index + 4,
+    Left is Index - 1,
+    Right is Index + 1,
+    TopLeft is Top - 1,
+    TopRight is Top + 1,
+    BottomLeft is Bottom - 1,
+    BottomRight is Bottom + 1,
+    AdjacentIndexes = [Top, Bottom, Left, Right, TopLeft, TopRight, BottomLeft, BottomRight].
 
 
 
@@ -86,7 +86,53 @@ dictionary(A) :-
     string_to_atom(A, X),
     s(_,_,X,_,_,_).
 
-% run function for a 3x3 board
+% boggle board solver where we pass in the board
+run(3,M):-
+    new(@p, picture('Boggle Board')),
+    send(@p, open),
+
+    nth0(0, M, A),
+    nth0(1, M, B),
+    nth0(2, M, C),
+    nth0(3, M, D),
+    nth0(4, M, E),
+    nth0(5, M, F),
+    nth0(6, M, G),
+    nth0(7, M, H),
+    nth0(8, M, I),
+
+    % First row
+    send(@p, display, new(@box1, box(50,50))),
+    send(@p, display, new(@text1, text(A)), point(10,10)),
+    send(@p, display, new(@box2, box(100,50))),
+    send(@p, display, new(@text2, text(B)), point(60,10)),
+    send(@p, display, new(@box3, box(150,50))),
+    send(@p, display, new(@text3, text(C)), point(110,10)),
+
+    % Second row
+    send(@p, display, new(@box5, box(50,100))),
+    send(@p, display, new(@text5, text(D)), point(10,50)),
+    send(@p, display, new(@box6, box(100,100))),
+    send(@p, display, new(@text6, text(E)), point(60,50)),
+    send(@p, display, new(@box7, box(150,100))),
+    send(@p, display, new(@text7, text(F)), point(110,50)),
+
+    % Third row
+    send(@p, display, new(@box9, box(50,150))),
+    send(@p, display, new(@text9, text(G)), point(10,100)),
+    send(@p, display, new(@box10, box(100,150))),
+    send(@p, display, new(@text10, text(H)), point(60,100)),
+    send(@p, display, new(@box11, box(150,150))),
+    send(@p, display, new(@text11, text(I)), point(110,100)),
+
+    % Display the answers
+    send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
+    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    sort(WordsWithDuplicate, Words),
+    flatten_and_concat(Words, FinalText),
+    send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
+
+% boggle board solver where we board is randlomly generated for 3x3
 run(3):-
     new(@p, picture('Boggle Board')),
     send(@p, open),
@@ -134,6 +180,7 @@ run(3):-
     flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
 
+
 % run function for a 4x4 board.
 run(4):-
     new(@p, picture('Boggle Board')),
@@ -153,7 +200,7 @@ run(4):-
     nth0(9, M, J),
     nth0(10, M, K),
     nth0(11, M, L),
-    nth0(12, M, M),
+    nth0(12, M, M1),
     nth0(13, M, N),
     nth0(14, M, O),
     nth0(15, M, P),
@@ -190,7 +237,7 @@ run(4):-
 
     %4
     send(@p, display, new(@box13, box(50,200))),
-    send(@p, display, new(@text13, text(M)), point(10,150)),
+    send(@p, display, new(@text13, text(M1)), point(10,150)),
     send(@p, display, new(@box14, box(100,200))),
     send(@p, display, new(@text14, text(N)), point(60,150)),
     send(@p, display, new(@box15, box(150,200))),
