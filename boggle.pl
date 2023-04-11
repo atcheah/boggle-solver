@@ -88,9 +88,46 @@ dictionary(A) :-
 
 % boggle board solver where we pass in the board
 run(3,M):-
+run(A, B, C, D, E, F, G, H, I) :-
     new(@p, picture('Boggle Board')),
     send(@p, open),
 
+    % First row
+    send(@p, display, new(@box1, box(50,50))),
+    send(@p, display, new(@text1, text(A)), point(10,10)),
+    send(@p, display, new(@box2, box(100,50))),
+    send(@p, display, new(@text2, text(B)), point(60,10)),
+    send(@p, display, new(@box3, box(150,50))),
+    send(@p, display, new(@text3, text(C)), point(110,10)),
+
+    % Second row
+    send(@p, display, new(@box5, box(50,100))),
+    send(@p, display, new(@text5, text(D)), point(10,50)),
+    send(@p, display, new(@box6, box(100,100))),
+    send(@p, display, new(@text6, text(E)), point(60,50)),
+    send(@p, display, new(@box7, box(150,100))),
+    send(@p, display, new(@text7, text(F)), point(110,50)),
+
+    % Third row
+    send(@p, display, new(@box9, box(50,150))),
+    send(@p, display, new(@text9, text(G)), point(10,100)),
+    send(@p, display, new(@box10, box(100,150))),
+    send(@p, display, new(@text10, text(H)), point(60,100)),
+    send(@p, display, new(@box11, box(150,150))),
+    send(@p, display, new(@text11, text(I)), point(110,100)),
+
+    % Display the answers
+    send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
+    solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
+    sort(WordsWithDuplicate, Words),
+    concat_all(Words, [], Result),
+    flatten_and_concat(Result, FinalText),
+    send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
+
+% boggle board solver where we board is randlomly generated for 3x3
+run(3):-
+    % Maps generate boggle to gui
+    generate_boggle_board(3, M),
     nth0(0, M, A),
     nth0(1, M, B),
     nth0(2, M, C),
@@ -131,11 +168,6 @@ run(3,M):-
     sort(WordsWithDuplicate, Words),
     flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
-
-% boggle board solver where we board is randlomly generated for 3x3
-run(3):-
-    generate_boggle_board(3, M),
-    run(3,M).
 
 
 % run function for a 4x4 board.
