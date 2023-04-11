@@ -87,7 +87,6 @@ dictionary(A) :-
     s(_,_,X,_,_,_).
 
 % boggle board solver where we pass in the board
-run(3,M):-
 run(A, B, C, D, E, F, G, H, I) :-
     new(@p, picture('Boggle Board')),
     send(@p, open),
