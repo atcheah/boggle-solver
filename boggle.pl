@@ -119,8 +119,7 @@ run(A, B, C, D, E, F, G, H, I) :-
     send(@p, display, new(@answer1, text('The possible words are: ')), point(100,150)),
     solve_boggle_board([A,B,C,D,E,F,G,H,I], WordsWithDuplicate),
     sort(WordsWithDuplicate, Words),
-    concat_all(Words, [], Result),
-    flatten_and_concat(Result, FinalText),
+    flatten_and_concat(Words, FinalText),
     send(@p, display, new(@answer2, text(FinalText)), point(100,170)).
 
 % boggle board solver where we board is randlomly generated for 3x3
